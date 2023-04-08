@@ -28,6 +28,8 @@ jobs:
         max-attempts: 30
         # Delay between retries
         retry-delay: 10s # Optional, only applicable to max-attempts > 1
+        # Retry all errors, including 404. This option might trigger curl upgrade.
+        retry-all: false # Optional, defaults to "false"
     - name: Set up Python 3.11.1
       uses: actions/setup-python@v4
       with:
