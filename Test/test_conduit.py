@@ -12,6 +12,14 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
+
+        # For GitHub Actions
+        options.add_argument('--headless')
+        # optional
+        options.add_argument('--no-sandbox')
+        # optional
+        options.add_argument('--disable-dev-shm-usage')
+
         self.browser = webdriver.Chrome(service=service, options=options)
         URL = "http://localhost:1667/#/"
         self.browser.get(URL)
