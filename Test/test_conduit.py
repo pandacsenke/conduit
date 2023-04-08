@@ -30,7 +30,7 @@ class TestConduit(object):
          pass
 
     def test_registration(self):
-        signUp_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,'a[href="#/register"]')))
+        signUp_btn = WebDriverWait(self.browser, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,'a[href="#/register"]')))
         signUp_btn.click()
 
         username_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Username"]')))
