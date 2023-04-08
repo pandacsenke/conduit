@@ -5,13 +5,13 @@ name: Test workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
