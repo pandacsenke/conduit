@@ -22,7 +22,6 @@ class TestConduit(object):
         # optional
         options.add_argument('--disable-dev-shm-usage')
 
-        service.service_args = ["--verbose"]
         self.browser = webdriver.Chrome(service=service, options=options)
         URL = "http://localhost:1667"
         self.browser.get(URL)
@@ -32,11 +31,6 @@ class TestConduit(object):
        self.browser.quit()
 
     def test_registration(self):
-        time.sleep(30)
-        print(self.browser.page_source, file=sys.stderr)
-        self.browser.find_element(By.ID, 'app')
-        sign_up_button = self.browser.find_element(By.LINK_TEXT, 'Sign up')
-        self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/register"]')
         signUp_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,'a[href="#/register"]')))
         signUp_btn.click()
 
