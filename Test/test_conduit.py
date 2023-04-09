@@ -15,14 +15,13 @@ class TestConduit(object):
 
         # For GitHub Actions
         options.add_argument('--headless')
-        options.add_argument("--enable-javascript")
         # optional
         options.add_argument('--no-sandbox')
         # optional
         options.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=service, options=options)
-        URL = "http://localhost:1667/#/"
+        URL = "http://localhost:1667"
         self.browser.get(URL)
         self.browser.maximize_window()
 
