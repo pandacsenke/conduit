@@ -20,14 +20,14 @@ class TestConduit(object):
         # optional
         options.add_argument('--disable-dev-shm-usage')
 
+        service.service_args = ["--verbose"]
         self.browser = webdriver.Chrome(service=service, options=options)
         URL = "http://localhost:1667"
         self.browser.get(URL)
         self.browser.maximize_window()
 
     def teardown_method(self):
-       # self.browser.quit()
-         pass
+       self.browser.quit()
 
     def test_registration(self):
         signUp_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,'a[href="#/register"]')))
