@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+import sys
 from selenium.webdriver.support.ui import Select
 
 class TestConduit(object):
@@ -30,7 +31,7 @@ class TestConduit(object):
        self.browser.quit()
 
     def test_registration(self):
-        print(self.browser.page_source)
+        print(self.browser.page_source, file=sys.stderr)
         self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/register"]')
         signUp_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,'a[href="#/register"]')))
         signUp_btn.click()
