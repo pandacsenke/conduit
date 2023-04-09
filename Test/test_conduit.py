@@ -35,6 +35,7 @@ class TestConduit(object):
         time.sleep(30)
         print(self.browser.page_source, file=sys.stderr)
         self.browser.find_element(By.ID, 'app')
+        sign_up_button = self.browser.find_element(By.LINK_TEXT, 'Sign up')
         self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/register"]')
         signUp_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,'a[href="#/register"]')))
         signUp_btn.click()
