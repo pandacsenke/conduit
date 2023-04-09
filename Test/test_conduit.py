@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import sys
+import time
 from selenium.webdriver.support.ui import Select
 
 class TestConduit(object):
@@ -31,6 +32,7 @@ class TestConduit(object):
        self.browser.quit()
 
     def test_registration(self):
+        time.sleep(30)
         print(self.browser.page_source, file=sys.stderr)
         self.browser.find_element(By.ID, 'app')
         self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/register"]')
