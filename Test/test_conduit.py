@@ -9,6 +9,7 @@ import sys
 import time
 from selenium.webdriver.support.ui import Select
 
+
 class TestConduit(object):
     def setup_method(self):
         service = Service(executable_path=ChromeDriverManager().install())
@@ -17,9 +18,9 @@ class TestConduit(object):
 
         # For GitHub Actions
         options.add_argument('--headless')
-        # optional
+
         options.add_argument('--no-sandbox')
-        # optional
+
         options.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=service, options=options)
@@ -28,37 +29,60 @@ class TestConduit(object):
         self.browser.maximize_window()
 
     def teardown_method(self):
-       self.browser.quit()
+        self.browser.quit()
 
     def test_registration(self):
-        signUp_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,'a[href="#/register"]')))
+        signUp_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/register"]')))
         signUp_btn.click()
 
-        username_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Username"]')))
+        username_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Username"]')))
         username_input.send_keys("pandacsenke")
 
-        email_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        email_input.send_keys("testpanda5@gmail.com")
+        email_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
+        email_input.send_keys("testpanda8@gmail.com")
 
-        password_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
+        password_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
         password_input.send_keys("Panda.test123")
 
-        sign_up_green_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
+        sign_up_green_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
         sign_up_green_btn.click()
 
-        welcome = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
+        welcome = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
 
         assert welcome.text == "Welcome!"
 
-        ok_button = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="swal-button swal-button--confirm"]')))
+        ok_button = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="swal-button swal-button--confirm"]')))
         ok_button.click()
 
-    # def test_login(self):
-    #     pass
-    #
-    # def test_cookies(self):
-    #     pass
-    #
+    def test_login(self):
+        signIn_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/login"]')))
+        signIn_btn.click()
+
+        email = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
+        email.send_keys("testpanda8@gmail.com")
+
+        password = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
+        password.send_keys("Panda.test123")
+
+        sign_in_green_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
+        sign_in_green_btn.click()
+
+    def test_cookies(self):
+        cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'button[class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
+        cookies_accept.click()
+
     # def test_DataList(self):
     #     pass
     #
