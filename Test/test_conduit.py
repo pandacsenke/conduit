@@ -94,7 +94,7 @@ class TestConduit(object):
         assert logout_btn.text == " Log out"
 
 
-    def test_DataList(self):
+    # def test_DataList(self):
     #     pass
     #
     # def test_AllPages(self):
