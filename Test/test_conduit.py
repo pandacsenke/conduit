@@ -17,11 +17,11 @@ class TestConduit(object):
         options.add_experimental_option("detach", True)
 
         # For GitHub Actions
-        options.add_argument('--headless')
-
-        options.add_argument('--no-sandbox')
-
-        options.add_argument('--disable-dev-shm-usage')
+        # options.add_argument('--headless')
+        #
+        # options.add_argument('--no-sandbox')
+        #
+        # options.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=service, options=options)
         URL = "http://localhost:1667"
@@ -29,7 +29,16 @@ class TestConduit(object):
         self.browser.maximize_window()
 
     def teardown_method(self):
-        self.browser.quit()
+        # self.browser.quit()
+        pass
+
+    def test_cookies(self):
+        cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'button[class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
+        cookies_accept.click()
+
+        cookie_panel = self.browser.find_elements(By.ID, 'cookie-policy-panel')
+        assert len(cookie_panel) == 0
 
     def test_registration(self):
         signUp_btn = WebDriverWait(self.browser, 5).until(
@@ -42,7 +51,7 @@ class TestConduit(object):
 
         email_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        email_input.send_keys("testpanda8@gmail.com")
+        email_input.send_keys("testpanda11@gmail.com")
 
         password_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
@@ -68,7 +77,7 @@ class TestConduit(object):
 
         email = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        email.send_keys("testpanda8@gmail.com")
+        email.send_keys("testpanda11@gmail.com")
 
         password = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
@@ -78,12 +87,14 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
         sign_in_green_btn.click()
 
-    def test_cookies(self):
-        cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-            (By.CSS_SELECTOR, 'button[class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-        cookies_accept.click()
+        time.sleep(5)
+        logout_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_all_elements_located((By.XPATH, '//a[@class="nav-link"]')))[3]
 
-    # def test_DataList(self):
+        assert logout_btn.text == " Log out"
+
+
+    def test_DataList(self):
     #     pass
     #
     # def test_AllPages(self):
