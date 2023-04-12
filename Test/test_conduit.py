@@ -57,6 +57,7 @@ class TestConduit(object):
             (By.CSS_SELECTOR, 'button[class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
         cookies_accept.click()
 
+        time.sleep(5)
         cookie_panel = self.browser.find_elements(By.ID, 'cookie-policy-panel')
         assert len(cookie_panel) == 0
 
