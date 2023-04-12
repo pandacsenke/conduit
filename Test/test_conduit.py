@@ -110,12 +110,25 @@ class TestConduit(object):
         for i in articles:
             list.append(i.text)
 
-        print(list)
+        # print(list)
 
         assert len(list) != 0
 
-    # def test_AllPages(self):
-    #     login(self.browser)
+    def test_AllPages(self):
+        login(self.browser)
+
+        page_link_buttons = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_all_elements_located((By.XPATH, '//a[@class="page-link"]')))
+
+        num_of_pages = len(page_link_buttons)
+
+        pages_clicked = 0
+        for page in page_link_buttons:
+            page.click()
+            pages_clicked += 1
+
+        assert num_of_pages == pages_clicked
+
     #
     # def test_NewDataInput(self):
     #     login(self.browser)
