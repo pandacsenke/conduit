@@ -1,3 +1,6 @@
+###################################### IMPORTS #########################################################################
+
+import allure
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -5,15 +8,12 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-import sys
 import time
 import csv
-from selenium.webdriver.support.ui import Select
 
-
-# basic functions
-
+############################## BASIC FUNCTIONS #########################################################################
 def login(browser):
+
     signIn_btn = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/login"]')))
     signIn_btn.click()
@@ -30,19 +30,17 @@ def login(browser):
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
     sign_in_green_btn.click()
 
-
+########################################################################################################################
 class TestConduit(object):
     def setup_method(self):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
 
-        # For GitHub Actions
-        options.add_argument('--headless')
-
-        options.add_argument('--no-sandbox')
-
-        options.add_argument('--disable-dev-shm-usage')
+        # # For GitHub Actions
+        # options.add_argument('--headless')
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=service, options=options)
         URL = "http://localhost:1667"
@@ -53,6 +51,8 @@ class TestConduit(object):
         # self.browser.quit()
         pass
 
+#################################### TESTS 1 - 11 ######################################################################
+    @allure.title('Adatkezelési nyilatkozat használata')
     def test_cookies(self):
         cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, 'button[class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
@@ -62,6 +62,7 @@ class TestConduit(object):
         cookie_panel = self.browser.find_elements(By.ID, 'cookie-policy-panel')
         assert len(cookie_panel) == 0
 
+    @allure.title('Regisztráció')
     def test_registration(self):
         signUp_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/register"]')))
@@ -92,6 +93,7 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="swal-button swal-button--confirm"]')))
         ok_button.click()
 
+    @allure.title('Bejelentkezés')
     def test_login(self):
         login(self.browser)
 
@@ -101,6 +103,7 @@ class TestConduit(object):
 
         assert logout_btn.text == " Log out"
 
+    @allure.title('Adatok listázása')
     def test_DataList(self):
         login(self.browser)
 
@@ -109,11 +112,13 @@ class TestConduit(object):
         list = []
         articles = WebDriverWait(self.browser, 5).until(
             EC.presence_of_all_elements_located((By.XPATH, '//h1')))[1::]
+
         for i in articles:
             list.append(i.text)
 
         assert len(list) != 0
 
+    @allure.title('Több oldalas lista bejárása')
     def test_AllPages(self):
         login(self.browser)
 
@@ -129,6 +134,7 @@ class TestConduit(object):
 
         assert num_of_pages == pages_clicked
 
+    @allure.title('Új adat bevitel')
     def test_NewDataInput(self):
         login(self.browser)
 
@@ -170,8 +176,10 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'h1')))
 
         time.sleep(5)
+
         assert banner.text == article_input["article_title"]
 
+    @allure.title('Ismételt és sorozatos adatbevitel adatforrásból')
     def test_RepeatedDataInput(self):
         login(self.browser)
 
@@ -207,8 +215,10 @@ class TestConduit(object):
                     EC.presence_of_element_located((By.CSS_SELECTOR, 'h1')))
 
                 time.sleep(5)
+
                 assert banner.text == i[0]
 
+    @allure.title('Meglévő adat módosítás')
     def test_DataModification(self):
         login(self.browser)
 
@@ -238,8 +248,10 @@ class TestConduit(object):
 
         update_success = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
+
         assert update_success.text == "Update successful!"
 
+    @allure.title('Adat vagy adatok törlése')
     def test_DataDelete(self):
         login(self.browser)
 
@@ -260,6 +272,7 @@ class TestConduit(object):
         my_comment = self.browser.find_elements(By.CSS_SELECTOR, 'p[class="card-text"]')[0]
 
         time.sleep(1)
+
         assert my_comment.text == "Ha!... Here goes my comment on this article... Cool."
 
         time.sleep(5)
@@ -275,12 +288,38 @@ class TestConduit(object):
         num_of_all_comments_after_del = len(all_comments_after_del)
 
         time.sleep(2)
+
         assert num_of_all_comments - 1 == num_of_all_comments_after_del
 
-        # def test_DataSave(self):
-        #     login(self.browser)
-        #
-        # def test_logout(self):
-        #     login(self.browser)
+    # @allure.title('Adatok lementése felületről')
+    # def test_SaveDataToFile(self):
+    #     login(self.browser)
+    #
+    #     time.sleep(2)
+    #     popular_tags_sidebar = self.browser.find_element(By.CSS_SELECTOR, 'div[class="sidebar"]')
+    #     popular_tags = popular_tags_sidebar.find_elements(By.CSS_SELECTOR, 'a[class="tag-pill tag-default"]')
+    #
+    #     tags_list = []
+    #     for i in popular_tags:
+    #         tags_list.append(i.text)
+    #
+    #     with open('pop_tags.csv', 'w', encoding="UTF-8") as file_new:
+    #         new = csv.writer(file_new)
+    #         new.writerow(tags_list)
 
 
+
+    @allure.title('Kijelentkezés')
+    def test_logout(self):
+        login(self.browser)
+
+        time.sleep(2)
+        logout_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_all_elements_located((By.XPATH, '//a[@class="nav-link"]')))[3]
+
+        logout_btn.click()
+
+        Sign_In_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/login"]')))
+
+        assert Sign_In_btn.is_displayed()
