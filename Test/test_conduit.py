@@ -177,7 +177,7 @@ class TestConduit(object):
     def test_RepeatedDataInput(self):
         login(self.browser)
 
-        with open('Test/data_input.csv', 'r') as data:
+        with open('data_input.csv', 'r') as data:
             data_reader = csv.reader(data, delimiter=',')
             next(data_reader)  # beolvasasbol az elso sort kihagyja
 
