@@ -20,7 +20,7 @@ def login(browser):
 
     email = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-    email.send_keys("testpanda13@gmail.com")
+    email.send_keys("testpanda15@gmail.com")
 
     password = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
@@ -73,7 +73,7 @@ class TestConduit(object):
 
         email_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        email_input.send_keys("testpanda13@gmail.com")
+        email_input.send_keys("testpanda15@gmail.com")
 
         password_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
@@ -111,8 +111,6 @@ class TestConduit(object):
             EC.presence_of_all_elements_located((By.XPATH, '//h1')))[1::]
         for i in articles:
             list.append(i.text)
-
-        # print(list)
 
         assert len(list) != 0
 
@@ -211,14 +209,78 @@ class TestConduit(object):
                 time.sleep(5)
                 assert banner.text == i[0]
 
-    # def test_DataModification(self):
-    #     login(self.browser)
-    #
-    # def test_DataDelete(self):
-    #     login(self.browser)
-    #
-    # def test_DataSave(self):
-    #     login(self.browser)
-    #
-    # def test_logout(self):
-    #     login(self.browser)
+    def test_DataModification(self):
+        login(self.browser)
+
+        settings = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/settings"]')))
+        settings.click()
+
+        image = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="URL of profile picture"]')))
+        username = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Your username"]')))
+        bio = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'textarea[placeholder="Short bio about you"]')))
+
+        update_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
+
+        image.clear()
+        image.send_keys(
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4-IasMjVLx5-PHYvqgMgTjyWYyjuoXeLlpg&usqp=CAU")
+        username.clear()
+        username.send_keys("housemouse")
+        bio.clear()
+        bio.send_keys(
+            "The house mouse (Mus musculus) is a small mammal of the order Rodentia, characteristically having a pointed snout, large rounded ears, and a long and almost hairless tail. It is one of the most abundant species of the genus Mus.")
+        update_btn.click()
+
+        update_success = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
+        assert update_success.text == "Update successful!"
+
+    def test_DataDelete(self):
+        login(self.browser)
+
+        time.sleep(2)
+        read_more_1st_article = self.browser.find_elements(By.CSS_SELECTOR, 'h1')[1]
+        read_more_1st_article.click()
+
+        comment = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'textarea[placeholder="Write a comment..."]')))
+
+        post_comment_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-sm btn-primary"]')))
+
+        comment.send_keys("Ha!... Here goes my comment on this article... Cool.")
+        post_comment_btn.click()
+
+        time.sleep(1)
+        my_comment = self.browser.find_elements(By.CSS_SELECTOR, 'p[class="card-text"]')[0]
+
+        time.sleep(1)
+        assert my_comment.text == "Ha!... Here goes my comment on this article... Cool."
+
+        time.sleep(5)
+        all_comments = self.browser.find_elements(By.CSS_SELECTOR, 'p[class="card-text"]')
+        num_of_all_comments = len(all_comments)
+
+        time.sleep(1)
+        first_delete_icon = self.browser.find_elements(By.CSS_SELECTOR, 'i[class="ion-trash-a"]')[0]
+        first_delete_icon.click()
+
+        time.sleep(2)
+        all_comments_after_del = self.browser.find_elements(By.CSS_SELECTOR, 'p[class="card-text"]')
+        num_of_all_comments_after_del = len(all_comments_after_del)
+
+        time.sleep(2)
+        assert num_of_all_comments - 1 == num_of_all_comments_after_del
+
+        # def test_DataSave(self):
+        #     login(self.browser)
+        #
+        # def test_logout(self):
+        #     login(self.browser)
+
+
