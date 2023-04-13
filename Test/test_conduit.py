@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import sys
 import time
+import csv
 from selenium.webdriver.support.ui import Select
 
 
@@ -130,13 +131,86 @@ class TestConduit(object):
 
         assert num_of_pages == pages_clicked
 
-    #
-    # def test_NewDataInput(self):
-    #     login(self.browser)
-    #
-    # def test_RepeatedDataInput(self):
-    #     login(self.browser)
-    #
+    def test_NewDataInput(self):
+        login(self.browser)
+
+        new_article = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
+        new_article.click()
+
+        # dictionary
+
+        article_input = {
+            "article_title": "This is the title of the article",
+            "summary": "Here goes the summary",
+            "full_article": "This will be the whole article, it is about bla bla bla ... ",
+            "tags": "tag1; tag2"
+        }
+
+        article_title = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
+        article_title.send_keys(article_input["article_title"])
+
+        summary = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+        summary.send_keys(article_input["summary"])
+
+        article = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
+        article.send_keys(article_input["full_article"])
+
+        tags = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Enter tags"]')))
+        tags.send_keys(article_input["tags"])
+
+        publish_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+        publish_btn.click()
+
+        banner = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'h1')))
+
+        time.sleep(5)
+        assert banner.text == article_input["article_title"]
+
+    def test_RepeatedDataInput(self):
+        login(self.browser)
+
+        with open('data_input.csv', 'r') as data:
+            data_reader = csv.reader(data, delimiter=',')
+            next(data_reader)  # beolvasasbol az elso sort kihagyja
+
+            for i in data_reader:
+                new_article = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
+                new_article.click()
+                article_title = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
+                summary = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+                article = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
+                tags = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Enter tags"]')))
+                publish_btn = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+
+                article_title.send_keys(i[0])
+                summary.send_keys(i[1])
+                article.send_keys(i[2])
+                tags.send_keys(i[3])
+
+                publish_btn.click()
+
+                banner = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'h1')))
+
+                time.sleep(5)
+                assert banner.text == i[0]
+
     # def test_DataModification(self):
     #     login(self.browser)
     #
