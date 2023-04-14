@@ -11,7 +11,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
 
-
 ############################## BASIC FUNCTIONS #########################################################################
 def login(browser):
     signIn_btn = WebDriverWait(browser, 5).until(
@@ -307,6 +306,8 @@ class TestConduit(object):
         with open('pop_tags.csv', 'w', encoding="UTF-8") as file_new:
             new = csv.writer(file_new)
             new.writerow(tags_list)
+
+        #hiányzó assert !!!
 
     @allure.title('Kijelentkezés')
     def test_logout(self):
