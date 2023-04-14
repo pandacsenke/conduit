@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
+from data_for_tests import article_input
 
 ############################## BASIC FUNCTIONS #########################################################################
 def login(browser):
@@ -36,11 +37,11 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
-
-        # For GitHub Actions
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
+        #
+        # # For GitHub Actions
+        # options.add_argument('--headless')
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=service, options=options)
         URL = "http://localhost:1667"
@@ -127,11 +128,11 @@ class TestConduit(object):
 
         num_of_pages = len(page_link_buttons)
 
-        pages_clicked = 0
+        pages_clicked = 0 # nem fog kelleni
         for page in page_link_buttons:
             page.click()
             pages_clicked += 1
-
+        # mindenhol van tartalom es mas, vagy li elemek kattintas utan valnak aktivva( valtozik a class)(page-item active lesz)
         assert num_of_pages == pages_clicked
 
     @allure.title('Új adat bevitel')
@@ -141,15 +142,6 @@ class TestConduit(object):
         new_article = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
         new_article.click()
-
-        # dictionary
-
-        article_input = {
-            "article_title": "This is the title of the article",
-            "summary": "Here goes the summary",
-            "full_article": "This will be the whole article, it is about bla bla bla ... ",
-            "tags": "tag1; tag2"
-        }
 
         article_title = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
@@ -308,6 +300,9 @@ class TestConduit(object):
             new.writerow(tags_list)
 
         #hiányzó assert !!!
+
+        # beolvasni a pop_tags fajlt
+        # elemenkent megnezni a tartalmat, azt hasonlitom ossze az eredeti tags_list-el
 
     @allure.title('Kijelentkezés')
     def test_logout(self):
