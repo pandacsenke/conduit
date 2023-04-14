@@ -11,9 +11,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
 
+
 ############################## BASIC FUNCTIONS #########################################################################
 def login(browser):
-
     signIn_btn = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/login"]')))
     signIn_btn.click()
@@ -29,6 +29,7 @@ def login(browser):
     sign_in_green_btn = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
     sign_in_green_btn.click()
+
 
 ########################################################################################################################
 class TestConduit(object):
@@ -51,7 +52,7 @@ class TestConduit(object):
         # self.browser.quit()
         pass
 
-#################################### TESTS 1 - 11 ######################################################################
+    #################################### TESTS 1 - 11 ######################################################################
     @allure.title('Adatkezelési nyilatkozat használata')
     def test_cookies(self):
         cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
@@ -291,23 +292,21 @@ class TestConduit(object):
 
         assert num_of_all_comments - 1 == num_of_all_comments_after_del
 
-    # @allure.title('Adatok lementése felületről')
-    # def test_SaveDataToFile(self):
-    #     login(self.browser)
-    #
-    #     time.sleep(2)
-    #     popular_tags_sidebar = self.browser.find_element(By.CSS_SELECTOR, 'div[class="sidebar"]')
-    #     popular_tags = popular_tags_sidebar.find_elements(By.CSS_SELECTOR, 'a[class="tag-pill tag-default"]')
-    #
-    #     tags_list = []
-    #     for i in popular_tags:
-    #         tags_list.append(i.text)
-    #
-    #     with open('pop_tags.csv', 'w', encoding="UTF-8") as file_new:
-    #         new = csv.writer(file_new)
-    #         new.writerow(tags_list)
+    @allure.title('Adatok lementése felületről')
+    def test_SaveDataToFile(self):
+        login(self.browser)
 
+        time.sleep(2)
+        popular_tags_sidebar = self.browser.find_element(By.CSS_SELECTOR, 'div[class="sidebar"]')
+        popular_tags = popular_tags_sidebar.find_elements(By.CSS_SELECTOR, 'a[class="tag-pill tag-default"]')
 
+        tags_list = []
+        for i in popular_tags:
+            tags_list.append(i.text)
+
+        with open('pop_tags.csv', 'w', encoding="UTF-8") as file_new:
+            new = csv.writer(file_new)
+            new.writerow(tags_list)
 
     @allure.title('Kijelentkezés')
     def test_logout(self):
