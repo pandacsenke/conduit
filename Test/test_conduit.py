@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
-from data_for_tests import article_input
+from data_for_tests import article_input, registration_data
 
 ############################## BASIC FUNCTIONS #########################################################################
 def login(browser):
@@ -20,16 +20,15 @@ def login(browser):
 
     email = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-    email.send_keys("testpanda15@gmail.com")
+    email.send_keys(registration_data["email"])
 
     password = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-    password.send_keys("Panda.test123")
+    password.send_keys(registration_data["password"])
 
     sign_in_green_btn = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
     sign_in_green_btn.click()
-
 
 ########################################################################################################################
 class TestConduit(object):
@@ -52,7 +51,7 @@ class TestConduit(object):
         # self.browser.quit()
         pass
 
-    #################################### TESTS 1 - 11 ######################################################################
+#################################### TESTS 1 - 11 ######################################################################
     @allure.title('Adatkezelési nyilatkozat használata')
     def test_cookies(self):
         cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
@@ -71,15 +70,15 @@ class TestConduit(object):
 
         username_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Username"]')))
-        username_input.send_keys("pandacsenke")
+        username_input.send_keys(registration_data["username"])
 
         email_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        email_input.send_keys("testpanda15@gmail.com")
+        email_input.send_keys(registration_data["email"])
 
         password_input = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-        password_input.send_keys("Panda.test123")
+        password_input.send_keys(registration_data["password"])
 
         sign_up_green_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
@@ -126,14 +125,10 @@ class TestConduit(object):
         page_link_buttons = WebDriverWait(self.browser, 5).until(
             EC.presence_of_all_elements_located((By.XPATH, '//a[@class="page-link"]')))
 
-        num_of_pages = len(page_link_buttons)
-
-        pages_clicked = 0 # nem fog kelleni
         for page in page_link_buttons:
             page.click()
-            pages_clicked += 1
-        # mindenhol van tartalom es mas, vagy li elemek kattintas utan valnak aktivva( valtozik a class)(page-item active lesz)
-        assert num_of_pages == pages_clicked
+            parent = page.find_element(By.XPATH, '..')
+            assert parent.get_attribute("class") == "page-item active"
 
     @allure.title('Új adat bevitel')
     def test_NewDataInput(self):
@@ -160,6 +155,7 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Enter tags"]')))
         tags.send_keys(article_input["tags"])
 
+        time.sleep(5)
         publish_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
         publish_btn.click()
@@ -299,10 +295,18 @@ class TestConduit(object):
             new = csv.writer(file_new)
             new.writerow(tags_list)
 
-        #hiányzó assert !!!
+        list_after = []
+        with open('pop_tags.csv', 'r', encoding="UTF-8") as tagsfile:
+            fav_tags = csv.reader(tagsfile)
+            for row in fav_tags:
+                list_after.extend(row)
+        print(tags_list)
+        print(list_after)
 
-        # beolvasni a pop_tags fajlt
-        # elemenkent megnezni a tartalmat, azt hasonlitom ossze az eredeti tags_list-el
+        assert len(tags_list) == len(list_after)
+
+        for i in range(len(tags_list)):
+            assert tags_list[i] == list_after[i]
 
     @allure.title('Kijelentkezés')
     def test_logout(self):
