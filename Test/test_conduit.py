@@ -10,7 +10,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
-from data_for_tests import article_input, registration_data
+from data_for_tests import article_input, registration_data, modification_data, comment_to_delete
+
 
 ############################## BASIC FUNCTIONS #########################################################################
 def login(browser):
@@ -30,6 +31,7 @@ def login(browser):
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
     sign_in_green_btn.click()
 
+
 ########################################################################################################################
 class TestConduit(object):
     def setup_method(self):
@@ -48,10 +50,9 @@ class TestConduit(object):
         self.browser.maximize_window()
 
     def teardown_method(self):
-        # self.browser.quit()
-        pass
+        self.browser.quit()
 
-#################################### TESTS 1 - 11 ######################################################################
+    #################################### TESTS 1 - 11 ######################################################################
     @allure.title('Adatkezelési nyilatkozat használata')
     def test_cookies(self):
         cookies_accept = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
@@ -225,13 +226,11 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
         image.clear()
-        image.send_keys(
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4-IasMjVLx5-PHYvqgMgTjyWYyjuoXeLlpg&usqp=CAU")
+        image.send_keys(modification_data["image"])
         username.clear()
-        username.send_keys("housemouse")
+        username.send_keys(modification_data["username"])
         bio.clear()
-        bio.send_keys(
-            "The house mouse (Mus musculus) is a small mammal of the order Rodentia, characteristically having a pointed snout, large rounded ears, and a long and almost hairless tail. It is one of the most abundant species of the genus Mus.")
+        bio.send_keys(modification_data["bio"])
         update_btn.click()
 
         update_success = WebDriverWait(self.browser, 5).until(
@@ -253,7 +252,7 @@ class TestConduit(object):
         post_comment_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-sm btn-primary"]')))
 
-        comment.send_keys("Ha!... Here goes my comment on this article... Cool.")
+        comment.send_keys(comment_to_delete)
         post_comment_btn.click()
 
         time.sleep(1)
@@ -261,7 +260,7 @@ class TestConduit(object):
 
         time.sleep(1)
 
-        assert my_comment.text == "Ha!... Here goes my comment on this article... Cool."
+        assert my_comment.text == comment_to_delete
 
         time.sleep(5)
         all_comments = self.browser.find_elements(By.CSS_SELECTOR, 'p[class="card-text"]')
